@@ -11,5 +11,10 @@ public class UserModelValidation extends BaseValidation {
              validateNotBlank(userModel.getUsername(), errors, ConstantConfiguration.USERNAME_ERROR_VALIDATION);
              validateNotBlank(userModel.getPassword(), errors, ConstantConfiguration.PASSWORD_ERROR_VALIDATION);
         }
+        if (name.equals(ConstantConfiguration.CREATE_USER_VALIDATOR)) {
+            validateNotBlank(userModel.getEmail(), errors, ConstantConfiguration.EMAIL_ERROR_VALIDATION);
+            validateNotBlank(userModel.getUsername(), errors, ConstantConfiguration.USERNAME_ERROR_VALIDATION);
+            validateNotBlank(userModel.getPassword(), errors, ConstantConfiguration.PASSWORD_ERROR_VALIDATION);
+        }
     }
 }
