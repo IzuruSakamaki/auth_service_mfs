@@ -1,9 +1,6 @@
 package com.mfs.auth.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,8 +14,13 @@ public class AccessModel {
     @Id
     @GeneratedValue
     private int id;
+    @Column(nullable = false)
     private String token;
+    @Column(nullable = false)
     private String refresh;
+    @Column(nullable = false)
     private long expiryTime;
-    private String code;
+    @OneToOne
+    @JoinColumn(name = "email", nullable = false)
+    private UserModel code;
 }
