@@ -1,18 +1,21 @@
-package com.mfs.auth.entity;
+package com.mfs.auth.entity.access;
 
+import com.mfs.auth.entity.user.UserModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "accessModel")
 public class AccessModel {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(nullable = false)
     private String token;

@@ -9,10 +9,13 @@ public final class ConstantConfiguration {
     public static final String SUCCESS = "success";
 
     // Validation Error Message
+    public static final String ID_ERROR_VALIDATION = "id_is_not_blank";
     public static final String EMAIL_ERROR_VALIDATION = "email_is_blank";
     public static final String USERNAME_ERROR_VALIDATION = "username_is_blank";
     public static final String PASSWORD_ERROR_VALIDATION = "password_is_blank";
+    public static final String EMAIL_OR_USERNAME_ERROR_VALIDATION = "email_or_username_is_blank";
 
-    // Validator Event
-    public static final String CREATE_USER_VALIDATOR = "create_user_validator";
+
+    public static final String AUTH_SECRET_KEY = "luWibu";
+
 }

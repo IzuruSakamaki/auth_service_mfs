@@ -1,7 +1,7 @@
-package com.mfs.auth.service;
+package com.mfs.auth.service.user;
 
 import com.mfs.auth.configuration.ConstantConfiguration;
-import com.mfs.auth.entity.UserModel;
+import com.mfs.auth.entity.user.UserModel;
 import com.mfs.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserModel readUserById(int id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public UserModel readUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
+    }
+
+    @Override
+    public UserModel readUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     @Override
