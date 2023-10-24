@@ -1,0 +1,13 @@
+package com.mfs.auth.entity;
+
+public enum RoleEnum {
+    SUPER_ADMIN(11),
+    ADMIN(12),
+    GENERAL(77);
+
+    final int authorizationRole;
+
+    RoleEnum (int authorizationRole) {
+        this.authorizationRole = authorizationRole;
+    }
+}
