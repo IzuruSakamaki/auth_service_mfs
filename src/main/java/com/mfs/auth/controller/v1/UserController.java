@@ -1,41 +1,38 @@
 package com.mfs.auth.controller.v1;
 
-import com.mfs.auth.entity.UserModel;
-import com.mfs.auth.service.UserService;
+import com.mfs.auth.configuration.ConstantConfiguration;
+import com.mfs.auth.entity.BaseResponse;
+import com.mfs.auth.entity.user.UserRequest;
+import com.mfs.auth.facade.user.UserFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/user")
-public class UserController {
+public class UserController extends BaseController {
     @Autowired
-    UserService userService;
+    UserFacade userFacade;
 
-    @GetMapping
-    public ResponseEntity<List<UserModel>> getAllUser() {
-        return ResponseEntity.ok().body(userService.readAllUser());
+    @GetMapping("accessed")
+    public ResponseEntity<String> trialAccessed() {
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<UserModel> getUserById(@PathVariable final int id) {
-        return ResponseEntity.ok().body(userService.readUserById(id));
+    @PostAuthorize("hasAuthority('GENERAL')")
+    @GetMapping("denied")
+    public ResponseEntity<String> trialDenied() {
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping
-    public ResponseEntity<String> postUser(@RequestBody UserModel userModel) {
-        return ResponseEntity.ok().body(userService.createUser(userModel));
-    }
-
-    @PutMapping("{id}")
-    public ResponseEntity<String> putUser(@PathVariable final int id, @RequestBody final UserModel userModel) {
-        return ResponseEntity.ok().body(userService.updateUser(userModel, id));
-    }
-
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteUserById(@PathVariable final int id) {
-        return ResponseEntity.ok().body(userService.deleteUser(id));
+    @PostMapping("register")
+    public ResponseEntity<BaseResponse> postUser(@RequestBody UserRequest userRequest, BindingResult bindingResult) {
+        requestValidation.validate(userRequest, bindingResult);
+        if (bindingResult.hasErrors())
+            return ResponseEntity.badRequest().body(BaseResponse.builder().status(400).data(ConstantConfiguration.ERROR).build());
+        BaseResponse baseResponse = userFacade.createUser(userRequest);
+        return ResponseEntity.status(baseResponse.getStatus()).body(baseResponse);
     }
 }
