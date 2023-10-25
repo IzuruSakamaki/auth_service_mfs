@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Objects;
 
 @Component
@@ -36,7 +37,7 @@ public class AccessFilter extends OncePerRequestFilter {
 
         if (Objects.nonNull(claims) && StringUtils.isNotBlank(claims.getSubject()) && Objects.isNull(SecurityContextHolder.getContext().getAuthentication())) {
             UserDetails userDetails = accessFacade.loadUserByUsername(claims.getSubject());
-            if (System.currentTimeMillis() < (long) claims.get("time")) {
+            if (new Date().before(claims.getExpiration())) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);

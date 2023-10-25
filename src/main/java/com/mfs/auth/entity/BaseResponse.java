@@ -5,11 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class BaseResponse {
+    int status;
     Object data;
-    long timestamp;
+    final long timestamp = new Date().getTime();
 }

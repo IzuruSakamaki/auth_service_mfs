@@ -4,17 +4,16 @@ import com.mfs.auth.configuration.AccessConfiguration;
 import com.mfs.auth.configuration.ConstantConfiguration;
 import com.mfs.auth.configuration.TokenConfiguration;
 import com.mfs.auth.entity.BaseResponse;
+import com.mfs.auth.configuration.EnvironmentConfiguration;
+import com.mfs.auth.entity.access.AccessResponse;
 import com.mfs.auth.entity.user.UserModel;
-import com.mfs.auth.entity.access.AccessModel;
 import com.mfs.auth.entity.access.AccessRequest;
-import com.mfs.auth.service.access.AccessService;
 import com.mfs.auth.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.Objects;
 
 @Component
@@ -22,38 +21,34 @@ public class AccessFacadeImpl implements AccessFacade {
     @Autowired
     UserService userService;
     @Autowired
-    AccessService accessService;
+    EnvironmentConfiguration environmentConfiguration;
     @Autowired
     TokenConfiguration tokenConfiguration;
 
     @Override
     public BaseResponse createAccess(AccessRequest accessRequest) {
-        UserModel userModel = accessRequest.getCode().contains("@") ?
-            userService.readUserByEmail(accessRequest.getCode()) :
-            userService.readUserByUsername(accessRequest.getCode());
-        BaseResponse baseResponse = BaseResponse.builder().timestamp(new Date().getTime()).build();
-        AccessModel accessModel = AccessModel.builder()
-            .code(Objects.nonNull(userModel) ? userModel : null)
-            .token(tokenConfiguration.encryptToken(accessRequest, 1800000))
-            .refresh(tokenConfiguration.encryptToken(accessRequest, 3600000))
-            .expiryTime(System.currentTimeMillis() + 1800000)
-            .build();
-        if (Objects.nonNull(userModel) &&
-                Objects.equals(accessService.createAccess(accessModel), ConstantConfiguration.SUCCESS)) {
-            baseResponse.setData(accessModel);
+        UserModel userModel = getCandidate(accessRequest.getCode());
+        if (Objects.nonNull(userModel)) {
+            return BaseResponse.builder().status(201).data(AccessResponse.builder()
+                .token(tokenConfiguration.encryptToken(accessRequest))
+                .expired(System.currentTimeMillis() + environmentConfiguration.getJwt_lifetime())
+                .role(userModel.getRole()).build()).build();
         } else {
-            baseResponse.setData(ConstantConfiguration.FAILED);
+            return BaseResponse.builder().status(404).data(ConstantConfiguration.FAILED).build();
         }
-        return baseResponse;
     }
 
     @Override
     public UserDetails loadUserByUsername(String code) throws UsernameNotFoundException {
-        UserModel userModel = code.contains("@") ? userService.readUserByEmail(code) : userService.readUserByUsername(code);
+        UserModel userModel = getCandidate(code);
         if (Objects.nonNull(userModel)) {
             return new AccessConfiguration(userModel);
         } else {
             throw new UsernameNotFoundException("User not found: " + code);
         }
+    }
+
+    private UserModel getCandidate(String code) {
+        return code.contains("@") ? userService.readUserByEmail(code) : userService.readUserByUsername(code);
     }
 }

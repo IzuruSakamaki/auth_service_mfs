@@ -10,4 +10,10 @@ public abstract class BaseValidation {
             errors.reject(ConstantConfiguration.ERROR, defaultMessage);
         }
     }
+
+    protected void validateEmail(String value, Errors errors, String defaultMessage) {
+        if (StringUtils.isBlank(value) || !value.contains("@")) {
+            errors.reject(ConstantConfiguration.ERROR, defaultMessage);
+        }
+    }
 }

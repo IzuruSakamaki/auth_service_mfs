@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 @Component
-public class UserModelValidation extends BaseValidation {
+public class RequestValidation extends BaseValidation {
     public void validate(Object request, Errors errors) {
         if (request instanceof UserRequest payload) {
-            validateNotBlank(payload.getEmail(), errors, ConstantConfiguration.EMAIL_ERROR_VALIDATION);
+            validateEmail(payload.getEmail(), errors, ConstantConfiguration.EMAIL_ERROR_VALIDATION);
             validateNotBlank(payload.getUsername(), errors, ConstantConfiguration.USERNAME_ERROR_VALIDATION);
             validateNotBlank(payload.getPassword(), errors, ConstantConfiguration.PASSWORD_ERROR_VALIDATION);
         } else if (request instanceof AccessRequest payload) {

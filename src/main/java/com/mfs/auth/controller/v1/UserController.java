@@ -10,8 +10,6 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("api/v1/user")
 public class UserController extends BaseController {
@@ -29,36 +27,12 @@ public class UserController extends BaseController {
         return ResponseEntity.ok().build();
     }
 
-
-//    @GetMapping
-//    public ResponseEntity<List<UserModel>> getAllUser() {
-//        return ResponseEntity.ok().body(userService.readAllUser());
-//    }
-
-//    @GetMapping("{id}")
-//    public ResponseEntity<UserModel> getUserById(@PathVariable final int id) {
-//        return ResponseEntity.ok().body(userService.readUserById(id));
-//    }
-
-//    @PostAuthorize("hasAuthority('ADMIN')")
     @PostMapping("register")
     public ResponseEntity<BaseResponse> postUser(@RequestBody UserRequest userRequest, BindingResult bindingResult) {
-        userModelValidation.validate(userRequest, bindingResult);
+        requestValidation.validate(userRequest, bindingResult);
         if (bindingResult.hasErrors())
-            return ResponseEntity.badRequest().body(BaseResponse.builder()
-                .data(ConstantConfiguration.ERROR).timestamp(System.currentTimeMillis()).build());
-        return ResponseEntity.ok().body(userFacade.createUser(userRequest));
+            return ResponseEntity.badRequest().body(BaseResponse.builder().status(400).data(ConstantConfiguration.ERROR).build());
+        BaseResponse baseResponse = userFacade.createUser(userRequest);
+        return ResponseEntity.status(baseResponse.getStatus()).body(baseResponse);
     }
-
-//    @PutMapping("{id}")
-//    public ResponseEntity<String> putUser(@PathVariable final int id, @RequestBody final UserModel userModel, BindingResult bindingResult) {
-//        userModelValidation.validate(userModel, bindingResult);
-//        if (bindingResult.hasErrors()) return ResponseEntity.badRequest().body(ConstantConfiguration.ERROR);
-//        return ResponseEntity.ok().body(userService.updateUser(userModel, id));
-//    }
-
-//    @DeleteMapping("{id}")
-//    public ResponseEntity<String> deleteUserById(@PathVariable final int id) {
-//        return ResponseEntity.ok().body(userService.deleteUser(id));
-//    }
 }
