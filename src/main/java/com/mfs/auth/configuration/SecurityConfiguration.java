@@ -27,12 +27,6 @@ public class SecurityConfiguration {
     @Autowired
     AccessFilter accessFilter;
 
-//    Please don't delete this comment before code already finish!
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-//        return httpSecurity.csrf(AbstractHttpConfigurer::disable).build();
-//    }
-
     @Bean
     public UserDetailsService userDetailsService() {
         return new AccessFacadeImpl();
@@ -41,10 +35,14 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(auth->{
-                auth.requestMatchers("/products/new","/products/authenticate").permitAll()
-                        .requestMatchers("/products/**").authenticated();
-            })
+            .authorizeHttpRequests(auth-> auth
+                .requestMatchers(
+                    "/api/v1/user/accessed",
+                    "/api/v1/user/register",
+                    "/api/v1/access/generate")
+                .permitAll()
+                .requestMatchers("/api/**")
+                .authenticated())
             .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(accessFilter, UsernamePasswordAuthenticationFilter.class)

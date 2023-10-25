@@ -18,6 +18,18 @@ public class UserController extends BaseController {
     @Autowired
     UserFacade userFacade;
 
+    @GetMapping("accessed")
+    public ResponseEntity<String> trialAccessed() {
+        return ResponseEntity.ok().build();
+    }
+
+    @PostAuthorize("hasAuthority('GENERAL')")
+    @GetMapping("denied")
+    public ResponseEntity<String> trialDenied() {
+        return ResponseEntity.ok().build();
+    }
+
+
 //    @GetMapping
 //    public ResponseEntity<List<UserModel>> getAllUser() {
 //        return ResponseEntity.ok().body(userService.readAllUser());
@@ -29,7 +41,7 @@ public class UserController extends BaseController {
 //    }
 
 //    @PostAuthorize("hasAuthority('ADMIN')")
-    @PostMapping
+    @PostMapping("register")
     public ResponseEntity<BaseResponse> postUser(@RequestBody UserRequest userRequest, BindingResult bindingResult) {
         userModelValidation.validate(userRequest, bindingResult);
         if (bindingResult.hasErrors())

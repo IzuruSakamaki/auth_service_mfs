@@ -48,12 +48,12 @@ public class AccessFacadeImpl implements AccessFacade {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserModel userModel = userService.readUserByEmail(email);
+    public UserDetails loadUserByUsername(String code) throws UsernameNotFoundException {
+        UserModel userModel = code.contains("@") ? userService.readUserByEmail(code) : userService.readUserByUsername(code);
         if (Objects.nonNull(userModel)) {
             return new AccessConfiguration(userModel);
         } else {
-            throw new UsernameNotFoundException("User not found: " + email);
+            throw new UsernameNotFoundException("User not found: " + code);
         }
     }
 }
