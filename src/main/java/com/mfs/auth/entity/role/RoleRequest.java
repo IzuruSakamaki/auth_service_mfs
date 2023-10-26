@@ -1,17 +1,14 @@
-package com.mfs.auth.entity.access;
+package com.mfs.auth.entity.role;
 
 import com.mfs.auth.entity.role.RoleEnum;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class AccessResponse {
-    private String token;
-    private long expired;
+public class RoleRequest {
+    private String code;
     private RoleEnum role;
 }

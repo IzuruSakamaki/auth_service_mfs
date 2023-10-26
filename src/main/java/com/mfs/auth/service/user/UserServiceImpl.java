@@ -5,6 +5,7 @@ import com.mfs.auth.entity.user.UserModel;
 import com.mfs.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -32,5 +33,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserModel readUserByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    @Override
+    public String deleteUser(int id) {
+        try {
+            userRepository.deleteById(id);
+        } catch (Exception e) {
+            return ConstantConfiguration.ERROR;
+        }
+        return ConstantConfiguration.SUCCESS;
     }
 }

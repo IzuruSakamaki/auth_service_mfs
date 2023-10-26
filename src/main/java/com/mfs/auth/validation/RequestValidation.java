@@ -2,6 +2,7 @@ package com.mfs.auth.validation;
 
 import com.mfs.auth.configuration.ConstantConfiguration;
 import com.mfs.auth.entity.access.AccessRequest;
+import com.mfs.auth.entity.role.RoleRequest;
 import com.mfs.auth.entity.user.UserRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -16,6 +17,11 @@ public class RequestValidation extends BaseValidation {
         } else if (request instanceof AccessRequest payload) {
             validateNotBlank(payload.getCode(), errors, ConstantConfiguration.EMAIL_OR_USERNAME_ERROR_VALIDATION);
             validateNotBlank(payload.getPassword(), errors, ConstantConfiguration.PASSWORD_ERROR_VALIDATION);
+        } else if (request instanceof RoleRequest payload) {
+            validateNotBlank(payload.getCode(), errors, ConstantConfiguration.EMAIL_OR_USERNAME_ERROR_VALIDATION);
+            validateNotNull(payload.getRole(), errors, ConstantConfiguration.ROLE_VALIDATION);
+        } else if (request instanceof String payload) {
+            validateNotBlank(payload, errors, ConstantConfiguration.STRING_VALIDATION);
         }
     }
 }

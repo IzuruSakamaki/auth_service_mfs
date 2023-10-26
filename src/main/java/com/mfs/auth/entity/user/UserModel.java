@@ -1,6 +1,6 @@
 package com.mfs.auth.entity.user;
 
-import com.mfs.auth.entity.RoleEnum;
+import com.mfs.auth.entity.role.RoleEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

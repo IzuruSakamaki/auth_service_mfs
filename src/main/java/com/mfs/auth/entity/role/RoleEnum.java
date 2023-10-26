@@ -1,4 +1,4 @@
-package com.mfs.auth.entity;
+package com.mfs.auth.entity.role;
 
 public enum RoleEnum {
     SUPER_ADMIN(11),

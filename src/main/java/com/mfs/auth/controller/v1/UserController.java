@@ -2,6 +2,7 @@ package com.mfs.auth.controller.v1;
 
 import com.mfs.auth.configuration.ConstantConfiguration;
 import com.mfs.auth.entity.BaseResponse;
+import com.mfs.auth.entity.role.RoleRequest;
 import com.mfs.auth.entity.user.UserRequest;
 import com.mfs.auth.facade.user.UserFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,24 @@ public class UserController extends BaseController {
         if (bindingResult.hasErrors())
             return ResponseEntity.badRequest().body(BaseResponse.builder().status(400).data(ConstantConfiguration.ERROR).build());
         BaseResponse baseResponse = userFacade.createUser(userRequest);
+        return ResponseEntity.status(baseResponse.getStatus()).body(baseResponse);
+    }
+
+    @PutMapping("assign")
+    public ResponseEntity<BaseResponse> putRole(@RequestBody RoleRequest roleRequest, BindingResult bindingResult) {
+        requestValidation.validate(roleRequest, bindingResult);
+        if (bindingResult.hasErrors())
+            return ResponseEntity.badRequest().body(BaseResponse.builder().status(400).data(ConstantConfiguration.ERROR).build());
+        BaseResponse baseResponse = userFacade.updateRole(roleRequest);
+        return ResponseEntity.status(baseResponse.getStatus()).body(baseResponse);
+    }
+
+    @DeleteMapping("remove")
+    public ResponseEntity<BaseResponse> deleteUser(@RequestBody String code, BindingResult bindingResult) {
+        requestValidation.validate(code, bindingResult);
+        if (bindingResult.hasErrors())
+            return ResponseEntity.badRequest().body(BaseResponse.builder().status(400).data(ConstantConfiguration.ERROR).build());
+        BaseResponse baseResponse = userFacade.deleteUser(code);
         return ResponseEntity.status(baseResponse.getStatus()).body(baseResponse);
     }
 }
